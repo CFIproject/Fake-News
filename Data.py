@@ -46,7 +46,7 @@ df['text'] = df.apply(stem_list, axis=1)
 df = df.drop("words", axis=1)      
 df = df.drop("stemmed_words", axis=1)      
 
-#Removing Stop Words
+# Removing Stop Words
 stops = set(stopwords.words("english"))   
 
 def remove_stops(row):
