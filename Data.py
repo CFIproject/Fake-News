@@ -40,4 +40,4 @@ def stem_list(row):
     stemmed_list = [stemming.stem(word) for word in my_list]
     return (stemmed_list)
 
-df['stemmed_words'] = df.apply(stem_list, axis=1)
+df['text'] = df.apply(stem_list, axis=1)
