@@ -6,6 +6,7 @@ nltk.download()
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 stemming = PorterStemmer()
+from nltk.corpus import stopwords
 
 df = pd.read_csv('fake_or_real_news.csv')
 x = df['text']
@@ -41,3 +42,16 @@ def stem_list(row):
     return (stemmed_list)
 
 df['text'] = df.apply(stem_list, axis=1)
+
+df = df.drop("words", axis=1)      
+df = df.drop("stemmed_words", axis=1)      
+
+#Removing Stop Words
+stops = set(stopwords.words("english"))   
+
+def remove_stops(row):
+    my_list = row['text']
+    meaningful_words = [w for w in my_list if not w in stops]
+    return (meaningful_words)
+
+df['text'] = df.apply(remove_stops, axis=1)
