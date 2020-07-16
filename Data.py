@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 import nltk
 nltk.download()
 from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+stemming = PorterStemmer()
 
 df = pd.read_csv('fake_or_real_news.csv')
 x = df['text']
@@ -21,6 +23,7 @@ print("In cv = ",cv_x.shape[0])
 
 x = x.str.lower()
 
+#Tokenization
 def identify_tokens(row):
     text = row['text']
     tokens = nltk.word_tokenize(text)
@@ -30,3 +33,11 @@ def identify_tokens(row):
 
 df['words'] = df.apply(identify_tokens, axis=1)
 df['words']
+
+#Stemming
+def stem_list(row):
+    my_list = row['words']
+    stemmed_list = [stemming.stem(word) for word in my_list]
+    return (stemmed_list)
+
+df['stemmed_words'] = df.apply(stem_list, axis=1)
