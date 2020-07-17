@@ -16,9 +16,9 @@ df = df.drop(columns = ['Unnamed: 0'],axis=1)
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2)
 x_train, x_cv, y_train, y_cv = train_test_split(x_train, y_train, test_size = 0.2)
 
-print("In train = ",train_x.shape[0])
+print("In train = ",x_train.shape[0])
 print("In test = ",x_test.shape[0])
-print("In cv = ",cv_x.shape[0])
+print("In cv = ",x_cv.shape[0])
 
 df['text'] = df['text'].str.lower()
 
