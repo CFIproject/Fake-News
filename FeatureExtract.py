@@ -75,13 +75,16 @@ df
 
 #***************************************************************************************************************************************************************
 
-#Since we cannot pass the text data directly to the machine learning classifiers as they take vectors of numbers as input, I converted the text into numbers by building a Bag-of-Words model first with CounterVectorizer and then with TfidfVectorizer.
+#Since we cannot pass the text data directly to the machine learning classifiers as they take vectors of numbers as input, 
+#I converted the text into numbers by building a Bag-of-Words model first with CounterVectorizer and then with TfidfVectorizer.
 
-#Now, to convert the text data into word-count-vectors I used CountVectorizer method which provides a simple way to both tokenize a collection of text documents and to construct a vocabulary of known words, also it is used to encode new documents using that vocabulary.
+#Now, to convert the text data into word-count-vectors I used CountVectorizer method which provides a simple way to both tokenize
+#a collection of text documents and to construct a vocabulary of known words, also it is used to encode new documents using that vocabulary.
 
 #Created an instance of the CountVectorizer class,
 
-#Called the fit_transform() function in order to tokenize, build the vocabulary and encoded the training dataset which returned an encoded vector with a length of entire vocabulary and integer count for the number of times each word appeared in the document.
+#Called the fit_transform() function in order to tokenize, build the vocabulary and encoded the training dataset which returned an 
+#encoded vector with a length of entire vocabulary and integer count for the number of times each word appeared in the document.
 
 #Term frequency (or word count) has already been calculated by CountVectorizer method, now to calculate the inverse document frequency (idf):
 
