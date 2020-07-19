@@ -120,3 +120,28 @@ first_vector_tfidfvectorizer = tfidf_vectorizer_vectors[0]
 # place tf-idf values in a pandas data frame
 daf = pd.DataFrame(first_vector_tfidfvectorizer.T.todense(), index=tfidf_vectorizer.get_feature_names(), columns=["tfidf"])
 daf.sort_values(by=["tfidf"],ascending=False)
+
+
+
+# building classifier using logistic regression
+logR_pipeline = Pipeline([
+        ('LogRCV',cvec),
+        ('LogR_clf',LogisticRegression())
+        ])
+
+logR_pipeline.fit(x_train['processed'],x_train['label'])
+predicted_LogR = logR_pipeline.predict(x_test['processed'])
+logReg_acc = np.mean(predicted_LogR == x_test['label'])
+print(logReg_acc)
+
+#building Linear SVM classfier
+svm_pipeline = Pipeline([
+        ('svmCV',cvec),
+        ('svm_clf',svm.LinearSVC())
+        ])
+
+
+svm_pipeline.fit(x_train['processed'],x_train['label'])
+predicted_svm = svm_pipeline.predict(x_test['processed'])
+svm_acc = np.mean(predicted_svm == x_test['label'])
+print(svm_acc)
