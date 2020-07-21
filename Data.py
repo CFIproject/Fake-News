@@ -13,6 +13,8 @@ y = df['label']
 
 df = df.drop(columns = ['Unnamed: 0'],axis=1)
 
+print(df.isnull().sum())
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2)
 x_train, x_cv, y_train, y_cv = train_test_split(x_train, y_train, test_size = 0.2)
 
