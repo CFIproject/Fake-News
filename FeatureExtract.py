@@ -12,11 +12,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn import svm
+import seaborn as sb
+from sklearn.metrics import confusion_matrix
 
 
 df = pd.read_csv('fake_or_real_news.csv')
 
 df = df.drop(columns = ['Unnamed: 0'],axis=1)
+
+print(df.isnull().sum())
 
 df['text'] = df['text'].str.lower()
 
@@ -68,13 +72,28 @@ x = df['processed']
 y = df['label']
 
 x_train, x_test, y_train, y_test = train_test_split(df, y, test_size = 0.2)
-x_train, x_cv, y_train, y_cv = train_test_split(x_train, y_train, test_size = 0.2)
+#x_train, x_cv, y_train, y_cv = train_test_split(x_train, y_train, test_size = 0.2)
 
 print("In train = ",x_train.shape[0])
 print("In test = ",x_test.shape[0])
-print("In cv = ",x_cv.shape[0])
+#print("In cv = ",x_cv.shape[0])
+
+#In train =  5068
+#In test =  1267
 
 df
+
+#Visualising data
+
+#distribution of classes for prediction
+def create_distribution(dataFile):
+    
+    return sb.countplot(x='label', data=dataFile, palette='hls')
+
+asd = pd.DataFrame(df['label'])
+
+create_distribution(df)
+
 
 #***************************************************************************************************************************************************************
 
@@ -110,41 +129,92 @@ traindata_cvec = cvec.fit_transform(x_train['processed'].values)
 # summarize
 print(cvec.vocabulary_)
 # print(cvec.get_feature_names())
-
 print(traindata_cvec.shape)
 
 # tfidf + ngrams
 tfidf_vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1,2), use_idf=True, smooth_idf=True)
 tfidf_vectorizer_vectors = tfidf_vectorizer.fit_transform(x_train['processed'].values)
-
 first_vector_tfidfvectorizer = tfidf_vectorizer_vectors[0]
-
 
 # place tf-idf values in a pandas data frame
 daf = pd.DataFrame(first_vector_tfidfvectorizer.T.todense(), index=tfidf_vectorizer.get_feature_names(), columns=["tfidf"])
 daf.sort_values(by=["tfidf"],ascending=False)
 
 
+#Using bag of words
 
-# building classifier using logistic regression
-logR_pipeline = Pipeline([
-        ('LogRCV',cvec),
-        ('LogR_clf',LogisticRegression())
-        ])
+# using LogisticRegression
+logReg_pipeline_cv = Pipeline([
+    ('LogRCV', cvec),
+    ('LogR_model', LogisticRegression())
+])
 
-logR_pipeline.fit(x_train['processed'],x_train['label'])
-predicted_LogR = logR_pipeline.predict(x_test['processed'])
-logReg_acc = np.mean(predicted_LogR == x_test['label'])
-print(logReg_acc)
+logReg_pipeline_cv.fit(x_train['processed'], x_train['label'])
+predictions_logReg = logReg_pipeline_cv.predict(x_test['processed'])
+logReg_cv = np.mean(predictions_logReg == x_test['label'])
 
-#building Linear SVM classfier
-svm_pipeline = Pipeline([
-        ('svmCV',cvec),
-        ('svm_clf',svm.LinearSVC())
-        ])
+# using SVM
+svm_pipeline_cv = Pipeline([
+    ('svmCV', cvec),
+    ('svm_model', svm.LinearSVC())
+])
+
+svm_pipeline_cv.fit(x_train['processed'], x_train['label'])
+predictions_svm = svm_pipeline_cv.predict(x_test['processed'])
+svm_cv = np.mean(predictions_svm == x_test['label'])
+
+print(logReg_cv)
+print(svm_cv)
+
+#0.9076558800315706
+#0.8760852407261247
+
+confusion_matrix(y_test,predictions_logReg,labels=['FAKE','REAL'])
+
+#array([[591,  51],
+#       [ 66, 559]])
+
+confusion_matrix(y_test,predictions_svm,labels=['FAKE','REAL'])
+
+#array([[565,  77],
+#      [ 80, 545]])
+
+#Using tfidf vectors
+
+# using LogisticRegression
+logReg_pipeline_cv = Pipeline([
+    ('LogRCV', tfidf_vectorizer),
+    ('LogR_model', LogisticRegression())
+])
+
+logReg_pipeline_cv.fit(x_train['processed'], x_train['label'])
+predictions_logReg_ = logReg_pipeline_cv.predict(x_test['processed'])
+logReg_ngram = np.mean(predictions_logReg_ == x_test['label'])
+
+# using SVM
+svm_pipeline_cv = Pipeline([
+    ('svmCV', tfidf_vectorizer),
+    ('svm_model', svm.LinearSVC())
+])
+
+svm_pipeline_cv.fit(x_train['processed'], x_train['label'])
+predictions_svm_ = svm_pipeline_cv.predict(x_test['processed'])
+svm_ngram = np.mean(predictions_svm_ == x_test['label'])
+
+print(logReg_ngram)
+print(svm_ngram)
+
+#0.9155485398579322
+#0.9376479873717443
+
+confusion_matrix(y_test,predictions_logReg_,labels=['FAKE','REAL'])
+
+#array([[594,  48],
+#      [ 59, 566]])
+
+confusion_matrix(y_test,predictions_svm_,labels=['FAKE','REAL'])
+
+#array([[604,  38],
+#       [ 41, 584]])
 
 
-svm_pipeline.fit(x_train['processed'],x_train['label'])
-predicted_svm = svm_pipeline.predict(x_test['processed'])
-svm_acc = np.mean(predicted_svm == x_test['label'])
-print(svm_acc)
