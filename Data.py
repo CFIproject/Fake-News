@@ -54,3 +54,15 @@ def remove_stops(row):
 
 df['text'] = df.apply(remove_stops, axis=1)
 df
+
+
+ #DataFlair - Initialize a PassiveAggressiveClassifier
+    #from sklearn.linear_model import PassiveAggressiveClassifier
+    
+    #pac=PassiveAggressiveClassifier(max_iter=50)
+    #pac.fit(tfidf_vectorizer,y_train)
+    #DataFlair - Predict on the test set and calculate accuracy
+    #y_pred=pac.predict(tfidf_test)
+    #score=accuracy_score(y_test,y_pred)
+    #print(f'Accuracy: {round(score*100,2)}%')
+
