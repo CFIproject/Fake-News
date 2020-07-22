@@ -13,7 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn import svm
 import seaborn as sb
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix,f1_score
 
 
 df = pd.read_csv('fake_or_real_news.csv')
@@ -152,6 +152,7 @@ logReg_pipeline_cv = Pipeline([
 logReg_pipeline_cv.fit(x_train['processed'], x_train['label'])
 predictions_logReg = logReg_pipeline_cv.predict(x_test['processed'])
 logReg_cv = np.mean(predictions_logReg == x_test['label'])
+score_log = f1_score(y_test,predictions_logReg, average = 'binary',pos_label='REAL')
 
 # using SVM
 svm_pipeline_cv = Pipeline([
@@ -162,12 +163,7 @@ svm_pipeline_cv = Pipeline([
 svm_pipeline_cv.fit(x_train['processed'], x_train['label'])
 predictions_svm = svm_pipeline_cv.predict(x_test['processed'])
 svm_cv = np.mean(predictions_svm == x_test['label'])
-
-print(logReg_cv)
-print(svm_cv)
-
-#0.9076558800315706
-#0.8760852407261247
+score_svm = f1_score(y_test,predictions_svm, average = 'binary',pos_label='REAL')
 
 confusion_matrix(y_test,predictions_logReg,labels=['FAKE','REAL'])
 
@@ -178,6 +174,16 @@ confusion_matrix(y_test,predictions_svm,labels=['FAKE','REAL'])
 
 #array([[565,  77],
 #      [ 80, 545]])
+
+print(f'Logisitc Regression Accuracy : {logReg_cv}')
+print(f'SVM Accuracy :                 {svm_cv}')
+print(f'Logisitc Regression f1 score : {score_log}')
+print(f'SVM f1 score :                 {score_svm}')
+
+#Logisitc Regression Accuracy : 0.9131807419100236
+#SVM Accuracy :                 0.8839779005524862
+#Logisitc Regression f1 score : 0.9164133738601823
+#SVM f1 score :                 0.8887206661619985
 
 #Using tfidf vectors
 
@@ -190,7 +196,8 @@ logReg_pipeline_cv = Pipeline([
 logReg_pipeline_cv.fit(x_train['processed'], x_train['label'])
 predictions_logReg_ = logReg_pipeline_cv.predict(x_test['processed'])
 logReg_ngram = np.mean(predictions_logReg_ == x_test['label'])
-
+score_log_ = f1_score(y_test,predictions_logReg_, average = 'binary',pos_label='REAL')
+                                                   
 # using SVM
 svm_pipeline_cv = Pipeline([
     ('svmCV', tfidf_vectorizer),
@@ -200,13 +207,8 @@ svm_pipeline_cv = Pipeline([
 svm_pipeline_cv.fit(x_train['processed'], x_train['label'])
 predictions_svm_ = svm_pipeline_cv.predict(x_test['processed'])
 svm_ngram = np.mean(predictions_svm_ == x_test['label'])
-
-print(logReg_ngram)
-print(svm_ngram)
-
-#0.9155485398579322
-#0.9376479873717443
-
+score_svm_ = f1_score(y_test,predictions_svm_, average = 'binary',pos_label='REAL')
+                      
 confusion_matrix(y_test,predictions_logReg_,labels=['FAKE','REAL'])
 
 #array([[594,  48],
@@ -216,5 +218,16 @@ confusion_matrix(y_test,predictions_svm_,labels=['FAKE','REAL'])
 
 #array([[604,  38],
 #       [ 41, 584]])
+
+
+print(f'Logistic Regression Accuracy : {logReg_ngram}')
+print(f'SVM Accuracy :                 {svm_ngram}')
+print(f'Logistic Regression f1 score : {score_log_}')
+print(f'SVM f1 score :                 {score_svm_}')
+
+#Logisitc Regression Accuracy : 0.9013417521704814
+#SVM Accuracy :                 0.9218626677190213
+#Logisitc Regression f1 score : 0.904507257448434
+#SVM f1 score :                 0.9248291571753986
 
 
