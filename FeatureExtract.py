@@ -188,26 +188,27 @@ print(f'SVM f1 score :                 {score_svm}')
 #Using tfidf vectors
 
 # using LogisticRegression
-logReg_pipeline_cv = Pipeline([
+logReg_pipeline_ngram = Pipeline([
     ('LogRCV', tfidf_vectorizer),
     ('LogR_model', LogisticRegression())
 ])
 
-logReg_pipeline_cv.fit(x_train['processed'], x_train['label'])
-predictions_logReg_ = logReg_pipeline_cv.predict(x_test['processed'])
+logReg_pipeline_ngram.fit(x_train['processed'], x_train['label'])
+predictions_logReg_ = logReg_pipeline_ngram.predict(x_test['processed'])
 logReg_ngram = np.mean(predictions_logReg_ == x_test['label'])
 score_log_ = f1_score(y_test,predictions_logReg_, average = 'binary',pos_label='REAL')
-                                                   
+
 # using SVM
-svm_pipeline_cv = Pipeline([
+svm_pipeline_ngram = Pipeline([
     ('svmCV', tfidf_vectorizer),
     ('svm_model', svm.LinearSVC())
 ])
 
-svm_pipeline_cv.fit(x_train['processed'], x_train['label'])
-predictions_svm_ = svm_pipeline_cv.predict(x_test['processed'])
+svm_pipeline_ngram.fit(x_train['processed'], x_train['label'])
+predictions_svm_ = svm_pipeline_ngram.predict(x_test['processed'])
 svm_ngram = np.mean(predictions_svm_ == x_test['label'])
 score_svm_ = f1_score(y_test,predictions_svm_, average = 'binary',pos_label='REAL')
+
                       
 confusion_matrix(y_test,predictions_logReg_,labels=['FAKE','REAL'])
 
@@ -230,4 +231,9 @@ print(f'SVM f1 score :                 {score_svm_}')
 #Logisitc Regression f1 score : 0.904507257448434
 #SVM f1 score :                 0.9248291571753986
 
+model_file = 'final_model.sav'
+#pickle.dump(logReg_pipeline_cv,open(model_file,'wb'))
+#pickle.dump(svm_pipeline_cv,open(model_file,'wb'))
+pickle.dump(logReg_pipeline_ngram,open(model_file,'wb'))
+#pickle.dump(svm_pipeline_ngram,open(model_file,'wb'))
 
