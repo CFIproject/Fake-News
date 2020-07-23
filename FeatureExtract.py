@@ -240,3 +240,17 @@ model_file = 'final_model.sav'
 #pickle.dump(logReg_pipeline_ngram,open(model_file,'wb'))
 pickle.dump(svm_pipeline_ngram,open(model_file,'wb'))
 
+var = input("Please enter the news text you want to verify: ")
+print("You entered: " + str(var))
+
+#function to run for prediction
+def detecting_fake_news(var):    
+#retrieving the best model for prediction call
+    load_model = pickle.load(open('final_model.sav', 'rb'))
+    prediction = load_model.predict([var])
+    prob = load_model.decision_function([var])
+
+    return (print("The given statement is ",prediction),
+        print("The truth probability score is ",prob))
+
+detecting_fake_news(var)
