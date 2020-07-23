@@ -14,7 +14,7 @@ from sklearn.pipeline import Pipeline
 from sklearn import svm
 import seaborn as sb
 from sklearn.metrics import confusion_matrix,f1_score
-
+import pickle
 
 df = pd.read_csv('fake_or_real_news.csv')
 
@@ -231,9 +231,11 @@ print(f'SVM f1 score :                 {score_svm_}')
 #Logisitc Regression f1 score : 0.904507257448434
 #SVM f1 score :                 0.9248291571753986
 
+
+#saving best model to the disk
 model_file = 'final_model.sav'
 #pickle.dump(logReg_pipeline_cv,open(model_file,'wb'))
 #pickle.dump(svm_pipeline_cv,open(model_file,'wb'))
-pickle.dump(logReg_pipeline_ngram,open(model_file,'wb'))
-#pickle.dump(svm_pipeline_ngram,open(model_file,'wb'))
+#pickle.dump(logReg_pipeline_ngram,open(model_file,'wb'))
+pickle.dump(svm_pipeline_ngram,open(model_file,'wb'))
 
